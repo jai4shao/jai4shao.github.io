@@ -251,39 +251,37 @@
     }
 
     // 表單送出
-    document.getElementById('shiftForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const data = {
-        days: {},
-        remark: document.getElementById('remark').value,
-        lastMonth6: document.getElementById('lastMonth6').value,
-        lineId: lineId
-      };
-      for (let i = 1; i <= daysInMonth; i++) {
-        const val = document.querySelector(`select[name="day${i}"]`).value;
-        data.days[i] = val;
-      }
-try {
+document.getElementById('shiftForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const data = {
+    days: {},
+    remark: document.getElementById('remark').value,
+    lastMonth6: document.getElementById('lastMonth6').value,
+    lineId: lineId
+  };
+  for (let i = 1; i <= daysInMonth; i++) {
+    const val = document.querySelector(`select[name="day${i}"]`).value;
+    data.days[i] = val;
+  }
+
+  // 將資料序列化為字串並 encode
   const params = new URLSearchParams();
   params.append('action', 'submitData');
-  params.append('data', JSON.stringify(data));
+  params.append('data', encodeURIComponent(JSON.stringify(data)));
 
-  const res = await fetch(GAS_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString()
-  });
-  const result = await res.json();
-  if (result && result.success) {
-    alert('送出成功！');
-    document.getElementById('shiftForm').reset();
-  } else {
-    alert('送出失敗！');
+  try {
+    const res = await fetch(GAS_URL + '?' + params.toString());
+    const result = await res.json();
+    if (result && result.success) {
+      alert('送出成功！');
+      document.getElementById('shiftForm').reset();
+    } else {
+      alert('送出失敗！');
+    }
+  } catch (e) {
+    alert('送出失敗：' + e);
   }
-} catch (e) {
-  alert('送出失敗：' + e);
-}
-    });
+});
 
     // 初始化
     window.onload = async function() {
