@@ -282,6 +282,7 @@ document.getElementById('shiftForm').addEventListener('submit', async function(e
     if (result && result.success) {
       alert('送出成功！');
       document.getElementById('shiftForm').reset();
+      liff.closeWindow();
     } else {
       alert('送出失敗！');
     }
