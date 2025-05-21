@@ -8,7 +8,7 @@
   <style>
 :root {
   --font1-size: 150%;
-  --font2-size: 70%;
+  --font2-size: 80%;
 }
 
 body {
@@ -23,9 +23,13 @@ h2 {
   font-size: var(--font1-size);
   margin: 10px 0 20px 0;
 }
-table {
+.calendar-container {
   width: 100%;
-  min-width: 700px;
+  overflow-x: auto;
+}
+table {
+  width: 100%;           /* 讓表格自動撐滿螢幕寬度 */
+  min-width: 320px;      /* 可依實際需求調整最小寬度 */
   border-collapse: collapse;
   margin: 10px 0 20px 0;
   background: #fff;
@@ -34,8 +38,8 @@ table {
 th, td {
   border: 1px solid #ccc;
   text-align: center;
-  padding: 10px 2px;
-  min-width: 80px;
+  padding: 8px 2px;
+  min-width: 32px;       /* 手機上欄位不會太寬 */
   font-size: var(--font2-size);
 }
 th {
@@ -49,23 +53,23 @@ th.saturday, td.saturday {
 }
 select {
   width: 90%;
-  padding: 8px;
+  padding: 6px;
   font-size: var(--font2-size);
   border-radius: 8px;
   border: 1px solid #ccc;
 }
 .input-group {
-  margin: 32px 0;
+  margin: 24px 0;
 }
 label {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-weight: bold;
   font-size: var(--font2-size);
 }
 input[type="text"] {
   width: 100%;
-  padding: 18px;
+  padding: 12px;
   font-size: var(--font2-size);
   box-sizing: border-box;
   border-radius: 8px;
@@ -74,8 +78,8 @@ input[type="text"] {
 button {
   display: block;
   width: 100%;
-  margin: 36px auto 0 auto;
-  padding: 24px 0;
+  margin: 24px auto 0 auto;
+  padding: 16px 0;
   background: #A8E6CF;
   color: #22543D;
   border: none;
@@ -95,12 +99,12 @@ button:active {
 @media (max-width: 700px) {
   table {
     font-size: var(--font2-size);
-    min-width: 500px;
+    min-width: 240px;
   }
   th, td {
     font-size: var(--font2-size);
-    min-width: 50px;
-    padding: 6px 1px;
+    min-width: 24px;
+    padding: 2px 1px;
   }
   select, input[type="text"], label, button {
     font-size: var(--font2-size);
