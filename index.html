@@ -129,240 +129,251 @@ button:active {
     </div>
     <button type="submit" id="submitBtn">送出班表</button>
   </form>
-  <script>
-    // 請填入您的 LIFF ID
-    const liffId = "2007431269-rQ7vYpWB";
-    // 請填入您的 GAS 網頁應用程式網址
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyyiNmZW8tI6qiBo_J3NDrqHjkJZ_b-yK1KdFRXj3mY7qnnJjI6rt9C0z4F7-cZqn2q/exec";
+<script>
+  // 請填入您的 LIFF ID
+  const liffId = "2007431269-rQ7vYpWB";
+  // 請填入您的 GAS 網頁應用程式網址
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbyyiNmZW8tI6qiBo_J3NDrqHjkJZ_b-yK1KdFRXj3mY7qnnJjI6rt9C0z4F7-cZqn2q/exec";
 
-    let lineId = "";
+  let lineId = "";
 
-    // LIFF 初始化
-    async function initLiff() {
-      document.getElementById('lineIdShow').textContent = "讀取中...";
-      try {
-        await liff.init({ liffId });
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
+  // LIFF 初始化
+  async function initLiff() {
+    document.getElementById('lineIdShow').textContent = "讀取中...";
+    try {
+      await liff.init({ liffId });
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+      const profile = await liff.getProfile();
+      lineId = profile.userId;
+      document.getElementById('lineIdShow').textContent = "您的 Line ID：" + lineId + "，名稱：" + profile.displayName;
+    } catch (e) {
+      document.getElementById('lineIdShow').textContent = "LIFF 初始化失敗：" + e;
+    }
+  }
+
+  // 取得當下年月
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1; // 1~12
+  const lastMonth = month === 1 ? 12 : month - 1;
+  const lastMonthYear = month === 1 ? year - 1 : year;
+
+  // 設定標題
+  document.getElementById('title').textContent = `${year}年${month}月約班表`;
+  document.getElementById('pageTitle').textContent = `${year}年${month}月約班表`;
+  document.getElementById('lastMonth6Label').textContent = `${lastMonthYear}年${lastMonth}月底六天班`;
+
+  // 取得當月天數
+  function getDaysInMonth(y, m) {
+    return new Date(y, m, 0).getDate();
+  }
+  const daysInMonth = getDaysInMonth(year, month);
+
+  // 取得本月1號是星期幾（0:日~6:六）
+  const firstDay = new Date(year, month - 1, 1).getDay();
+
+  // 取得下拉選單選項（從 GAS 取得）
+  let selectOptions = [];
+  async function loadSettings() {
+    try {
+      const res = await fetch(GAS_URL + "?action=getSettings");
+      const options = await res.json();
+      if (!options || options.length === 0) {
+        alert("下拉選單設定為空，請檢查 setting 分頁！");
+      }
+      selectOptions = options;
+      buildCalendar();
+    } catch (e) {
+      alert("取得下拉選單失敗：" + e);
+    }
+  }
+
+  // 建立行事曆表格
+  function buildCalendar() {
+    const table = document.getElementById('calendarTable');
+    table.innerHTML = '';
+    // 星期標題
+    const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+    const trHead = document.createElement('tr');
+    weekDays.forEach((d, i) => {
+      const th = document.createElement('th');
+      th.textContent = d;
+      if (i === 0) th.className = 'sunday';
+      if (i === 6) th.className = 'saturday';
+      trHead.appendChild(th);
+    });
+    table.appendChild(trHead);
+
+    // 日期與下拉選單
+    let tr = document.createElement('tr');
+    let day = 1;
+    // 填入空白
+    for (let i = 0; i < firstDay; i++) {
+      tr.appendChild(document.createElement('td'));
+    }
+    for (let i = firstDay; i < 7; i++) {
+      tr.appendChild(createDayCell(day, i));
+      day++;
+    }
+    table.appendChild(tr);
+
+    while (day <= daysInMonth) {
+      tr = document.createElement('tr');
+      for (let i = 0; i < 7; i++) {
+        if (day > daysInMonth) {
+          tr.appendChild(document.createElement('td'));
+        } else {
+          tr.appendChild(createDayCell(day, i));
+          day++;
         }
-        const profile = await liff.getProfile();
-        lineId = profile.userId;
-        document.getElementById('lineIdShow').textContent = "您的 Line ID：" + lineId + "，名稱：" + profile.displayName;
-      } catch (e) {
-        document.getElementById('lineIdShow').textContent = "LIFF 初始化失敗：" + e;
-      }
-    }
-
-    // 取得當下年月
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1; // 1~12
-    const lastMonth = month === 1 ? 12 : month - 1;
-    const lastMonthYear = month === 1 ? year - 1 : year;
-
-    // 設定標題
-    document.getElementById('title').textContent = `${year}年${month}月約班表`;
-    document.getElementById('pageTitle').textContent = `${year}年${month}月約班表`;
-    document.getElementById('lastMonth6Label').textContent = `${lastMonthYear}年${lastMonth}月底六天班`;
-
-    // 取得當月天數
-    function getDaysInMonth(y, m) {
-      return new Date(y, m, 0).getDate();
-    }
-    const daysInMonth = getDaysInMonth(year, month);
-
-    // 取得本月1號是星期幾（0:日~6:六）
-    const firstDay = new Date(year, month - 1, 1).getDay();
-
-    // 取得下拉選單選項（從 GAS 取得）
-    let selectOptions = [];
-    async function loadSettings() {
-      try {
-        const res = await fetch(GAS_URL + "?action=getSettings");
-        const options = await res.json();
-        if (!options || options.length === 0) {
-          alert("下拉選單設定為空，請檢查 setting 分頁！");
-        }
-        selectOptions = options;
-        buildCalendar();
-      } catch (e) {
-        alert("取得下拉選單失敗：" + e);
-      }
-    }
-
-    // 建立行事曆表格
-    function buildCalendar() {
-      const table = document.getElementById('calendarTable');
-      table.innerHTML = '';
-      // 星期標題
-      const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
-      const trHead = document.createElement('tr');
-      weekDays.forEach((d, i) => {
-        const th = document.createElement('th');
-        th.textContent = d;
-        if (i === 0) th.className = 'sunday';
-        if (i === 6) th.className = 'saturday';
-        trHead.appendChild(th);
-      });
-      table.appendChild(trHead);
-
-      // 日期與下拉選單
-      let tr = document.createElement('tr');
-      let day = 1;
-      // 填入空白
-      for (let i = 0; i < firstDay; i++) {
-        tr.appendChild(document.createElement('td'));
-      }
-      for (let i = firstDay; i < 7; i++) {
-        tr.appendChild(createDayCell(day, i));
-        day++;
       }
       table.appendChild(tr);
-
-      while (day <= daysInMonth) {
-        tr = document.createElement('tr');
-        for (let i = 0; i < 7; i++) {
-          if (day > daysInMonth) {
-            tr.appendChild(document.createElement('td'));
-          } else {
-            tr.appendChild(createDayCell(day, i));
-            day++;
-          }
-        }
-        table.appendChild(tr);
-      }
     }
-
-    // 建立單一天的 cell
-    function createDayCell(day, weekIdx) {
-      const td = document.createElement('td');
-      if (weekIdx === 0) td.className = 'sunday';
-      if (weekIdx === 6) td.className = 'saturday';
-      td.innerHTML = `<div>${day}</div>`;
-      // 下拉選單
-      const select = document.createElement('select');
-      select.name = `day${day}`;
-      const emptyOpt = document.createElement('option');
-      emptyOpt.value = '';
-      emptyOpt.textContent = '';
-      select.appendChild(emptyOpt);
-      selectOptions.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt;
-        option.textContent = opt;
-        select.appendChild(option);
-      });
-      td.appendChild(select);
-      return td;
-    }
-
-    // 表單送出
-    async function checkLineIdExists(lineId) {
-  const url = `${GAS_URL}?action=checkLineId&lineId=${encodeURIComponent(lineId)}&sheet=users`;
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.exists;
-  } catch (e) {
-    console.error('檢查 lineId 發生錯誤:', e);
-    return false;
-  }
-}
-  document.getElementById('shiftForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-     // 先判斷時間
-  const allowed = await isWithinAllowedTime();
-  if (!allowed) {
-    alert('現在無法進行預約');
-    return;
-  }
-     // 再判斷 lineId 是否存在名單中
-    if (!lineId) {
-    alert('無法取得您的 Line ID，請重新啟動 LIFF。');
-    return;
-  }
-  
-  // 先檢查 lineId 是否存在於 users 分頁
-  const isAllowed = await checkLineIdExists(lineId);
-  if (!isAllowed) {
-    alert('您不在使用者名單中，請先加入才可以使用，謝謝。');
-    return; // 阻止送出
   }
 
-  const data = {
-    days: {},
-    remark: document.getElementById('remark').value,
-    lastMonth6: document.getElementById('lastMonth6').value,
-    lineId: lineId
-  };
-  for (let i = 1; i <= daysInMonth; i++) {
-    const val = document.querySelector(`select[name="day${i}"]`).value;
-    data.days[i] = val;
+  // 建立單一天的 cell
+  function createDayCell(day, weekIdx) {
+    const td = document.createElement('td');
+    if (weekIdx === 0) td.className = 'sunday';
+    if (weekIdx === 6) td.className = 'saturday';
+    td.innerHTML = `<div>${day}</div>`;
+    // 下拉選單
+    const select = document.createElement('select');
+    select.name = `day${day}`;
+    const emptyOpt = document.createElement('option');
+    emptyOpt.value = '';
+    emptyOpt.textContent = '';
+    select.appendChild(emptyOpt);
+    selectOptions.forEach(opt => {
+      const option = document.createElement('option');
+      option.value = opt;
+      option.textContent = opt;
+      select.appendChild(option);
+    });
+    td.appendChild(select);
+    return td;
   }
 
-  // 將資料序列化為字串並 encode
-  const params = new URLSearchParams();
-  params.append('action', 'submitData');
-  params.append('data', encodeURIComponent(JSON.stringify(data)));
-
-  try {
-    const res = await fetch(GAS_URL + '?' + params.toString());
-    const result = await res.json();
-    if (result && result.success) {
-      alert('送出成功！');
-      document.getElementById('shiftForm').reset();
-      liff.closeWindow();
-    } else {
-      alert('送出失敗！');
-    }
-  } catch (e) {
-    alert('送出失敗：' + e);
+  // 格式化日期 yyyy-mm-dd 字串
+  function formatDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
   }
-});
-      async function getTimeLimit() {
-      const res = await fetch(GAS_URL + "?action=getTimeLimit");
-      if (!res.ok) throw new Error("無法取得時間限制");
-      return res.json();
-    }
 
-    function formatDate(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const d = String(date.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
-    }
+  // 取得時間限制設定
+  async function getTimeLimit() {
+    const res = await fetch(GAS_URL + "?action=getTimeLimit");
+    if (!res.ok) throw new Error("無法取得時間限制");
+    return res.json();
+  }
 
-    async function isWithinAllowedTime() {
-      try {
-        const limit = await getTimeLimit();
-        if (!limit.startDate || !limit.endDate || !limit.startTime || !limit.endTime) {
-          return false;
-        }
-
-        const now = new Date();
-        const nowDateStr = formatDate(now);
-        const nowHour = String(now.getHours()).padStart(2, "0");
-
-        if (nowDateStr < limit.startDate || nowDateStr > limit.endDate) {
-          return false;
-        }
-        if (nowHour < limit.startTime || nowHour > limit.endTime) {
-          return false;
-        }
-        return true;
-      } catch (e) {
-        console.error("時間判斷錯誤", e);
+  // 判斷是否在允許時間內
+  async function isWithinAllowedTime() {
+    try {
+      const limit = await getTimeLimit();
+      if (!limit.startDate || !limit.endDate || !limit.startTime || !limit.endTime) {
         return false;
       }
+
+      const now = new Date();
+      const nowDateStr = formatDate(now);
+      const nowHour = now.getHours();
+      const startHour = parseInt(limit.startTime, 10);
+      const endHour = parseInt(limit.endTime, 10);
+
+      if (nowDateStr < limit.startDate || nowDateStr > limit.endDate) {
+        return false;
+      }
+      if (nowHour < startHour || nowHour > endHour) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      console.error("時間判斷錯誤", e);
+      return false;
+    }
+  }
+
+  // 檢查使用者是否在 users 名單中
+  async function checkLineIdExists(lineId) {
+    const url = `${GAS_URL}?action=checkLineId&lineId=${encodeURIComponent(lineId)}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.exists;
+    } catch (e) {
+      console.error('檢查 lineId 發生錯誤:', e);
+      return false;
+    }
+  }
+
+  // 表單送出事件
+  document.getElementById('shiftForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // 1. 判斷時間限制
+    const allowed = await isWithinAllowedTime();
+    if (!allowed) {
+      alert('現在無法進行預約');
+      return;
     }
 
+    // 2. 確認有取得 lineId
+    if (!lineId) {
+      alert('無法取得您的 Line ID，請重新啟動 LIFF。');
+      return;
+    }
 
-    // 初始化
-    window.onload = async function() {
-      await initLiff();
-      await loadSettings();
+    // 3. 檢查 lineId 是否在名單中
+    const isAllowed = await checkLineIdExists(lineId);
+    if (!isAllowed) {
+      alert('您不在使用者名單中，請先加入才可以使用，謝謝。');
+      return;
+    }
+
+    // 4. 準備送出資料
+    const data = {
+      days: {},
+      remark: document.getElementById('remark').value,
+      lastMonth6: document.getElementById('lastMonth6').value,
+      lineId: lineId
     };
-  </script>
+    for (let i = 1; i <= daysInMonth; i++) {
+      const val = document.querySelector(`select[name="day${i}"]`).value;
+      data.days[i] = val;
+    }
+
+    // 5. 序列化並送出資料
+    const params = new URLSearchParams();
+    params.append('action', 'submitData');
+    params.append('data', encodeURIComponent(JSON.stringify(data)));
+
+    try {
+      const res = await fetch(GAS_URL + '?' + params.toString());
+      const result = await res.json();
+      if (result && result.success) {
+        alert('送出成功！');
+        document.getElementById('shiftForm').reset();
+        liff.closeWindow();
+      } else {
+        alert('送出失敗！');
+      }
+    } catch (e) {
+      alert('送出失敗：' + e);
+    }
+  });
+
+  // 初始化 LIFF
+  window.onload = async function () {
+    await initLiff();
+    await loadSettings();
+  };
+</script>
+
 </body>
 </html>
