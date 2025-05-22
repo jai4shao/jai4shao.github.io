@@ -357,18 +357,6 @@ button:active {
       }
     }
 
-    document.getElementById("shiftForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const allowed = await isWithinAllowedTime();
-      if (!allowed) {
-        alert("現在無法進行預約");
-        return;
-      }
-
-      // TODO: 送出你的表單資料，例如呼叫你的 GAS submitData action
-      alert("時間判斷通過，這裡可繼續送出表單");
-    });
 
     // 初始化
     window.onload = async function() {
