@@ -330,7 +330,7 @@ https://script.google.com/macros/s/AKfycbwF3Es36LG_Z9vVX251MD7nlxv1ITvFoSTYheAOk
   // 初始化 LIFF
   async function initLiff() {
     try {
-      await liff.init({ liffId: '你的LIFF_ID' });
+      await liff.init({ liffId });
       if (!liff.isLoggedIn()) {
         liff.login();
         return;
