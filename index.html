@@ -312,22 +312,21 @@ button:active {
   }
 
   // 表單送出事件
-  document.getElementById('shiftForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+document.getElementById('shiftForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
   const submitBtn = document.getElementById('submitBtn');
   submitBtn.disabled = true;            // 禁用按鈕
   submitBtn.textContent = '請稍候...';  // 顯示提示文字
 
   try {
-    // 你的送出邏輯，例如時間判斷、lineId判斷、送出資料等
+    // 1. 時間判斷
     const allowed = await isWithinAllowedTime();
     if (!allowed) {
       alert('現在無法進行預約');
-      submitBtn.disabled = false;
-      submitBtn.textContent = '送出班表';
       return;
     }
 
+    // 2. 準備資料
     const data = {
       days: {},
       remark: document.getElementById('remark').value,
@@ -339,20 +338,21 @@ button:active {
       data.days[i] = val;
     }
 
+    // 3. 傳送資料
     const params = new URLSearchParams();
     params.append('action', 'submitData');
     params.append('data', encodeURIComponent(JSON.stringify(data)));
 
-    try {
-      const res = await fetch(GAS_URL + '?' + params.toString());
-      const result = await res.json();
-      if (result && result.success) {
-        alert('送出成功！');
-        this.reset();
-        liff.closeWindow();
-      } else {
-        alert('送出失敗！');
-      }
+    const res = await fetch(GAS_URL + '?' + params.toString());
+    const result = await res.json();
+
+    if (result && result.success) {
+      alert('送出成功！');
+      this.reset();
+      liff.closeWindow();
+    } else {
+      alert('送出失敗！');
+    }
   } catch (error) {
     alert('送出失敗：' + error);
   } finally {
@@ -361,11 +361,6 @@ button:active {
   }
 });
 
-  // 初始化 LIFF 與載入設定
-  window.onload = async function () {
-    await initLiff();
-    await loadSettings();
-  };
 </script>
 </body>
 </html>
