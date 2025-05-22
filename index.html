@@ -273,32 +273,35 @@ button:active {
   }
 
   // 判斷是否在允許時間內
-  async function isWithinAllowedTime() {
-    try {
-      const limit = await getTimeLimit();
-      if (!limit.startDate || !limit.endDate || !limit.startTime || !limit.endTime) {
-        return false;
-      }
-
-      const now = new Date();
-      const nowDateStr = formatDate(now);
-      const nowHour = now.getHours();
-      const startHour = parseInt(limit.startTime, 10);
-      const endHour = parseInt(limit.endTime, 10);
-
-      if (nowDateStr < limit.startDate || nowDateStr > limit.endDate) {
-        return false;
-      }
-      if (nowHour < startHour || nowHour > endHour) {
-        return false;
-      }
-      return true;
-    } catch (e) {
-      console.error("時間判斷錯誤", e);
+async function isWithinAllowedTime() {
+  try {
+    const limit = await getTimeLimit();
+    if (!limit.startDate || !limit.endDate || !limit.startTime || !limit.endTime) {
       return false;
     }
-  }
 
+    const now = new Date();
+    const nowDateStr = formatDate(now);
+    const nowHour = now.getHours();
+
+    const startHour = parseInt(limit.startTime, 10);
+    const endHour = parseInt(limit.endTime, 10);
+
+    console.log('nowDateStr:', nowDateStr, 'startDate:', limit.startDate, 'endDate:', limit.endDate);
+    console.log('nowHour:', nowHour, 'startHour:', startHour, 'endHour:', endHour);
+
+    if (nowDateStr < limit.startDate || nowDateStr > limit.endDate) {
+      return false;
+    }
+    if (nowHour < startHour || nowHour > endHour) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("時間判斷錯誤", e);
+    return false;
+  }
+}
   // 檢查使用者是否在 users 名單中
   async function checkLineIdExists(lineId) {
     const url = `${GAS_URL}?action=checkLineId&lineId=${encodeURIComponent(lineId)}`;
