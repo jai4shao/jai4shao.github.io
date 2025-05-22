@@ -258,8 +258,31 @@ button:active {
     }
 
     // 表單送出
-document.getElementById('shiftForm').addEventListener('submit', async function(e) {
+    async function checkLineIdExists(lineId) {
+  const url = `${GAS_URL}?action=checkLineId&lineId=${encodeURIComponent(lineId)}&sheet=users`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.exists;
+  } catch (e) {
+    console.error('您的 LineId 不在加入名單中，無法送出資料:', e);
+    return false;
+  }
+}
+  document.getElementById('shiftForm').addEventListener('submit', async function(e) {
   e.preventDefault();
+    if (!lineId) {
+    alert('無法取得您的 Line ID，請重新啟動 LIFF。');
+    return;
+  }
+
+  // 先檢查 lineId 是否存在於 users 分頁
+  const isAllowed = await checkLineIdExists(lineId);
+  if (!isAllowed) {
+    alert('您不在使用者名單中，請先加入使用。');
+    return; // 阻止送出
+  }
+
   const data = {
     days: {},
     remark: document.getElementById('remark').value,
