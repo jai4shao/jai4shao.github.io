@@ -133,7 +133,7 @@ button:active {
     // 請填入您的 LIFF ID
     const liffId = "2007431269-rQ7vYpWB";
     // 請填入您的 GAS 網頁應用程式網址
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbx0GV_4FMoQZoFhcQKnzzrlosAvPz_0OjiopPOOuVn5-IlPIxeThKBIUHK3qxQw9Py9/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbz_zbc8EM8qijOd-32bYCh1AS-9RciffWrpCTOCjXTf32jxkFhvCzbOwOIFn5c5hcai/exec";
 
     let lineId = "";
 
@@ -313,6 +313,55 @@ button:active {
     alert('送出失敗：' + e);
   }
 });
+      async function getTimeLimit() {
+      const res = await fetch(GAS_URL + "?action=getTimeLimit");
+      if (!res.ok) throw new Error("無法取得時間限制");
+      return res.json();
+    }
+
+    function formatDate(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    async function isWithinAllowedTime() {
+      try {
+        const limit = await getTimeLimit();
+        if (!limit.startDate || !limit.endDate || !limit.startTime || !limit.endTime) {
+          return false;
+        }
+
+        const now = new Date();
+        const nowDateStr = formatDate(now);
+        const nowHour = String(now.getHours()).padStart(2, "0");
+
+        if (nowDateStr < limit.startDate || nowDateStr > limit.endDate) {
+          return false;
+        }
+        if (nowHour < limit.startTime || nowHour > limit.endTime) {
+          return false;
+        }
+        return true;
+      } catch (e) {
+        console.error("時間判斷錯誤", e);
+        return false;
+      }
+    }
+
+    document.getElementById("shiftForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const allowed = await isWithinAllowedTime();
+      if (!allowed) {
+        alert("現在無法進行預約");
+        return;
+      }
+
+      // TODO: 送出你的表單資料，例如呼叫你的 GAS submitData action
+      alert("時間判斷通過，這裡可繼續送出表單");
+    });
 
     // 初始化
     window.onload = async function() {
