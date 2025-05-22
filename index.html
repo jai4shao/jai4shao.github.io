@@ -136,7 +136,9 @@ button:active {
   const GAS_URL = "https://script.google.com/macros/s/AKfycbwF3Es36LG_Z9vVX251MD7nlxv1ITvFoSTYheAOkl0ixBupjzS5SXmjWnoxKcKcXYDT/exec";
 
   let lineId = "";
-  let daysInMonth = 31; // 實際月份天數請動態設定
+  let daysInMonth; // 動態設定當月天數
+  let selectOptions = [];
+
   // LIFF 初始化
   async function initLiff() {
     document.getElementById('lineIdShow').textContent = "讀取中...";
@@ -170,13 +172,12 @@ button:active {
   function getDaysInMonth(y, m) {
     return new Date(y, m, 0).getDate();
   }
-  const daysInMonth = getDaysInMonth(year, month);
+  daysInMonth = getDaysInMonth(year, month);
 
   // 取得本月1號是星期幾（0:日~6:六）
   const firstDay = new Date(year, month - 1, 1).getDay();
 
   // 取得下拉選單選項（從 GAS 取得）
-  let selectOptions = [];
   async function loadSettings() {
     try {
       const res = await fetch(GAS_URL + "?action=getSettings");
@@ -257,11 +258,50 @@ button:active {
     return td;
   }
 
-https://script.google.com/macros/s/AKfycbwF3Es36LG_Z9vVX251MD7nlxv1ITvFoSTYheAOkl0ixBupjzS5SXmjWnoxKcKcXYDT/exec
+  // 格式化日期 yyyy-mm-dd 字串
+  function formatDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  // 取得時間限制設定
+  async function getTimeLimit() {
+    const res = await fetch(GAS_URL + "?action=getTimeLimit");
+    if (!res.ok) throw new Error("無法取得時間限制");
+    return res.json();
+  }
+
+  // 解析日期與時間字串成 Date 物件
+  function parseDateTime(dateStr, timeStr) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const [hour, minute] = timeStr.split(':').map(Number);
+    return new Date(year, month - 1, day, hour, minute);
+  }
+
+  // 判斷是否在允許時間內（起始日期時間 ~ 結束日期時間）
+  async function isWithinAllowedTime() {
+    try {
+      const limit = await getTimeLimit();
+      if (!limit.startDate || !limit.endDate || !limit.startTime || !limit.endTime) {
+        return false;
+      }
+      const now = new Date();
+      const startDateTime = parseDateTime(limit.startDate, limit.startTime);
+      const endDateTime = parseDateTime(limit.endDate, limit.endTime);
+
+      return now >= startDateTime && now <= endDateTime;
+    } catch (e) {
+      console.error("時間判斷錯誤", e);
+      return false;
+    }
+  }
+
   // 檢查使用者是否在 users 名單中
   async function checkLineIdExists(lineId) {
-    const url = `${GAS_URL}?action=checkLineId&lineId=${encodeURIComponent(lineId)}`;
     try {
+      const url = `${GAS_URL}?action=checkLineId&lineId=${encodeURIComponent(lineId)}`;
       const res = await fetch(url);
       const data = await res.json();
       return data.exists;
@@ -275,27 +315,19 @@ https://script.google.com/macros/s/AKfycbwF3Es36LG_Z9vVX251MD7nlxv1ITvFoSTYheAOk
   document.getElementById('shiftForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    // 1. 判斷時間限制
-    const allowed = await isWithinAllowedTime();
-    if (!allowed) {
+    if (!await isWithinAllowedTime()) {
       alert('現在無法進行預約');
       return;
     }
-
-    // 2. 確認有取得 lineId
     if (!lineId) {
       alert('無法取得您的 Line ID，請重新啟動 LIFF。');
       return;
     }
-
-    // 3. 檢查 lineId 是否在名單中
-    const isAllowed = await checkLineIdExists(lineId);
-    if (!isAllowed) {
+    if (!await checkLineIdExists(lineId)) {
       alert('您不在使用者名單中，請先加入才可以使用，謝謝。');
       return;
     }
 
-    // 4. 準備送出資料
     const data = {
       days: {},
       remark: document.getElementById('remark').value,
@@ -307,7 +339,6 @@ https://script.google.com/macros/s/AKfycbwF3Es36LG_Z9vVX251MD7nlxv1ITvFoSTYheAOk
       data.days[i] = val;
     }
 
-    // 5. 序列化並送出資料
     const params = new URLSearchParams();
     params.append('action', 'submitData');
     params.append('data', encodeURIComponent(JSON.stringify(data)));
@@ -327,30 +358,11 @@ https://script.google.com/macros/s/AKfycbwF3Es36LG_Z9vVX251MD7nlxv1ITvFoSTYheAOk
     }
   });
 
-  // 初始化 LIFF
-  async function initLiff() {
-    try {
-      await liff.init({ liffId });
-      if (!liff.isLoggedIn()) {
-        liff.login();
-        return;
-      }
-      const profile = await liff.getProfile();
-      lineId = profile.userId;
-      console.log('Line ID:', lineId);
-    } catch (e) {
-      console.error('LIFF 初始化失敗:', e);
-    }
-  }
-
-  window.onload = async () => {
+  // 初始化 LIFF 與載入設定
+  window.onload = async function () {
     await initLiff();
-    // 請根據實際月份設定 daysInMonth
-    const now = new Date();
-    daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    // 如果有其他初始化，如 loadSettings() 也可放這裡
+    await loadSettings();
   };
 </script>
-
 </body>
 </html>
