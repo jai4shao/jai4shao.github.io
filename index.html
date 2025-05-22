@@ -271,11 +271,18 @@ button:active {
 }
   document.getElementById('shiftForm').addEventListener('submit', async function(e) {
   e.preventDefault();
+     // 先判斷時間
+  const allowed = await isWithinAllowedTime();
+  if (!allowed) {
+    alert('現在無法進行預約');
+    return;
+  }
+     // 再判斷 lineId 是否存在名單中
     if (!lineId) {
     alert('無法取得您的 Line ID，請重新啟動 LIFF。');
     return;
   }
-
+  
   // 先檢查 lineId 是否存在於 users 分頁
   const isAllowed = await checkLineIdExists(lineId);
   if (!isAllowed) {
