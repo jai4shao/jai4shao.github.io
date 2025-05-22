@@ -265,7 +265,7 @@ button:active {
     const data = await res.json();
     return data.exists;
   } catch (e) {
-    console.error('您的 LineId 不在加入名單中，無法送出資料:', e);
+    console.error('檢查 lineId 發生錯誤:', e);
     return false;
   }
 }
@@ -279,7 +279,7 @@ button:active {
   // 先檢查 lineId 是否存在於 users 分頁
   const isAllowed = await checkLineIdExists(lineId);
   if (!isAllowed) {
-    alert('您不在使用者名單中，請先加入使用。');
+    alert('您不在使用者名單中，請先加入才可以使用，謝謝。');
     return; // 阻止送出
   }
 
