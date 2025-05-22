@@ -361,6 +361,11 @@ document.getElementById('shiftForm').addEventListener('submit', async function (
   }
 });
 
+    // 初始化
+    window.onload = async function() {
+      await initLiff();
+      await loadSettings();
+    };
 </script>
 </body>
 </html>
