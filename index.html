@@ -371,9 +371,20 @@ document.getElementById('shiftForm').addEventListener('submit', async function (
 
     // 初始化
     window.onload = async function() {
-      await initLiff();
-      await loadSettings();
-    };
+  await initLiff();
+  await loadSettings();
+
+  // 判斷是否在允許預約時間
+  const allowed = await isWithinAllowedTime();
+  const submitBtn = document.getElementById('submitBtn');
+  if (!allowed) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '目前無法預約';
+  } else {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '送出班表';
+  }
+};
 </script>
 </body>
 </html>
