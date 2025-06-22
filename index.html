@@ -192,9 +192,9 @@
       lineId = profile.userId;
       document.getElementById("displayLineId").textContent = lineId;
       checkRegistration();
-    }
-      // 👇 載入完成後關閉提示
+            // 👇 載入完成後關閉提示
     document.getElementById("loadingOverlay").style.display = "none";
+    }
 
     async function checkRegistration() {
       const form = new URLSearchParams();
