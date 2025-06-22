@@ -129,7 +129,7 @@
   border-radius: 4px;
   height: 36px;
   color: #333;             /* 預設文字顏色 */
-  background-color: #fff;  /* 預設背景顏色 */
+  background-color: #f0f0f0;  /* 淡灰色背景 */
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -140,31 +140,24 @@
 /* 設置選項文字顏色與背景相同 */
 .custom-select-wrapper select option {
   color: #333;                  /* 文字顏色 */
-  background-color: #fff;       /* 背景顏色 */
+  background-color: #f0f0f0;    /* 背景顏色與選單一致 */
 }
 
 /* 當選項被選擇時，文字顏色與背景色保持一致 */
 .custom-select-wrapper select:focus {
-  background-color: #fff;  /* 背景色 */
-  color: #333;              /* 文字顏色 */
+  background-color: #f0f0f0;    /* 背景色保持一致 */
+  color: #333;                   /* 文字顏色 */
 }
 
 .custom-select-wrapper select option:checked {
-  background-color: #fff;  /* 選擇後的背景色 */
-  color: #fff;              /* 文字顏色保持與背景一致 */
+  background-color: #f0f0f0;    /* 選擇後的背景色 */
+  color: #333;                   /* 文字顏色與背景一致 */
 }
 
-  
-  #saveResult {
-    text-align: center;
-    margin-top: 0.5em;
-    font-weight: bold;
-    font-size: 0.95em;
-  }
-    /* 預約按鈕禁用樣式 */
-button:disabled {
-  background-color: #ccc;  /* 灰色背景 */
-  cursor: not-allowed;     /* 禁用游標 */
+/* 禁用狀態的選項樣式 */
+.custom-select-wrapper select:disabled option {
+  color: #aaa;                   /* 禁用選項文字顏色 */
+  background-color: #e0e0e0;     /* 禁用選項背景顏色 */
 }
 
 button.disabled {
