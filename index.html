@@ -135,35 +135,40 @@
   -moz-appearance: none;
   padding-right: 2.5em;    /* 預留空間給箭頭圖示 */
   box-sizing: border-box;
+  opacity: 1;              /* 確保選單和選項透明 */
 }
 
-/* 設置選項文字顏色與背景相同 */
+/* 設置選項的透明化 */
 .custom-select-wrapper select option {
   color: #333;                  /* 文字顏色 */
   background-color: #f0f0f0;    /* 背景顏色與選單一致 */
+  opacity: 0.6;                 /* 讓選項保持透明 */
 }
 
 /* 當選項被選擇時，文字顏色與背景色保持一致 */
-.custom-select-wrapper select:focus {
-  background-color: #f0f0f0;    /* 背景色保持一致 */
-  color: #333;                   /* 文字顏色 */
-}
-
 .custom-select-wrapper select option:checked {
   background-color: #f0f0f0;    /* 選擇後的背景色 */
-  color: #333;                   /* 文字顏色與背景一致 */
+  color: #333;                   /* 文字顏色保持與背景一致 */
+  opacity: 1;                    /* 保持透明 */
 }
 
-/* 禁用狀態的選項樣式 */
-.custom-select-wrapper select:disabled option {
-  color: #aaa;                   /* 禁用選項文字顏色 */
-  background-color: #e0e0e0;     /* 禁用選項背景顏色 */
+/* 下拉選單中的 SVG 圖示 */
+.custom-select-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 50%;                      /* 垂直置中起點 */
+  left: 50%;                     /* 水平居中 */
+  transform: translate(-50%, -50%); /* 讓圖示完全居中 */
+  width: 3em;                  /* 圖示寬度 */
+  height: 3em;                 /* 圖示高度 */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='orange' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  pointer-events: none;
+  z-index: 10; /* 確保箭頭顯示在 select 之上 */
 }
 
-button.disabled {
-  background-color: #ccc;  /* 灰色背景 */
-  color: #999;              /* 灰色文字 */
-}
 
 /* 預約按鈕啟用狀態 */
 button {
