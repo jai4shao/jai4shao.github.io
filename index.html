@@ -128,30 +128,32 @@
   width: 100%;
   border-radius: 4px;
   height: 36px;
-  color: #333;            /* 設置預設文字顏色 */
-  background-color: #fff; /* 設置背景顏色 */
+  color: #333;             /* 預設文字顏色 */
+  background-color: #fff;  /* 預設背景顏色 */
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='orange' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  padding-right: 2.5em; /* 預留空間給箭頭圖示 */
+  padding-right: 2.5em;    /* 預留空間給箭頭圖示 */
   box-sizing: border-box;
 }
 
-/* 設置選項文字顏色 */
+/* 設置選項文字顏色與背景相同 */
 .custom-select-wrapper select option {
-  color: #333;                  /* 設置文字顏色 */
-  background-color: #fff;       /* 設置選項的背景顏色 */
+  color: #333;                  /* 文字顏色 */
+  background-color: #fff;       /* 背景顏色 */
 }
 
-/* 如果選項背景色要與選單背景色相同 */
-.custom-select-wrapper select:disabled option {
-  color: #aaa;                  /* 禁用狀態的文字顏色 */
-  background-color: #f0f0f0;    /* 禁用選項的背景顏色 */
+/* 當選項被選擇時，文字顏色與背景色保持一致 */
+.custom-select-wrapper select:focus {
+  background-color: #fff;  /* 背景色 */
+  color: #333;              /* 文字顏色 */
 }
+
+.custom-select-wrapper select option:checked {
+  background-color: #fff;  /* 選擇後的背景色 */
+  color: #fff;              /* 文字顏色保持與背景一致 */
+}
+
   
   #saveResult {
     text-align: center;
