@@ -53,7 +53,7 @@
 
   input, button, select {
     width: 100%;
-    padding: 2px;
+    padding: 10px;
     margin-top: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
@@ -87,7 +87,7 @@
   }
 
   #calendarArea td, #calendarArea th {
-    padding: 2px; /* 減少整格的高度 */
+    padding: 2px;
     vertical-align: top;
     border: 1px solid #bbb;
   }
@@ -101,7 +101,7 @@
   }
 
   td > div:first-child {
-    margin-bottom: 0.1em;  /* 日期與下拉選單距離縮小 */
+    margin-bottom: 0.1em;
     line-height: 1.1;
     font-size: 0.95em;
   }
@@ -111,65 +111,56 @@
     color: #625b57;
     text-align: center;
     font-weight: bold;
-    margin-top: 0.4em; /* 下拉選單與說明文字之間距離 */
+    margin-top: 0.4em;
   }
 
   .desc-r {
     color: red;
   }
 
-  .faint-select {
+  /* 🎯 下拉選單樣式 */
+  .custom-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .custom-select-wrapper select {
+    width: 100%;
+    padding-right: 2.5em;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 0.9em;
     background-color: #eee;
     color: #eee;
     border: 1px solid #ccc;
-    padding: 2px 4px;        /* 高度縮小 */
-    font-size: 0.9em;
     border-radius: 4px;
     height: auto;
+    padding: 4px 6px;
+    box-sizing: border-box;
   }
 
-  .faint-select option {
-    color: #333;
-  }
-
-  .custom-select-wrapper {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-  }
-
-.custom-select-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center; /* ✅ 垂直置中 */
-}
-
-.custom-select-wrapper select {
-  padding-right: 1em; /* 預留右邊空間 */
-}
 .custom-select-wrapper::after {
-  content: "🔽";
+  content: "";
   position: absolute;
   right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 1.2em;
+  height: 1.2em;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
   pointer-events: none;
-  
-  /* ✅ 以下是新增關鍵設定 */
-  height: 25px;              /* 同 select 高度 */
-  width: 25px;               /* 寬度也一致 */
-  background-color: #eee;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em;
-  color: #ff9800;
-  box-shadow: inset 0 0 1px #aaa;
 }
 
-
-
+  .custom-select-wrapper select option {
+    color: #333;
+  }
+  
   #saveResult {
     text-align: center;
     margin-top: 0.5em;
@@ -177,6 +168,7 @@
     font-size: 0.95em;
   }
 </style>
+
 
 </head>
 <body>
