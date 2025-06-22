@@ -7,150 +7,156 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
-    /* 🔄 載入中提示 */
-    #loadingOverlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2em;
-      font-weight: bold;
-      z-index: 9999;
-    }
+  /* 🔄 載入提示 */
+  #loadingOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    z-index: 9999;
+  }
 
-    #loadingOverlay::after {
-      content: "🔄 載入中，請稍候…";
-      animation: blink 1.2s infinite;
-    }
+  #loadingOverlay::after {
+    content: "🔄 載入中，請稍候…";
+    animation: blink 1.2s infinite;
+  }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
 
-    body {
-      font-family: sans-serif;
-      background: #f9fbe7;
-      margin: 0;
-      font-size: 100%;
-    }
+  /* 基本樣式 */
+  body {
+    font-family: sans-serif;
+    background: #f9fbe7;
+    margin: 0;
+    font-size: 100%;
+  }
 
-    h2 {
-      text-align: center;
-      font-size: 1.4em;
-    }
+  h2 {
+    text-align: center;
+    font-size: 1.4em;
+  }
 
-    .block {
-      margin-top: 20px;
-      padding: 10px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
+  .block {
+    margin-top: 20px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
 
-    input, button, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1em;
-      box-sizing: border-box;
-    }
+  input, button, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    box-sizing: border-box;
+  }
 
-    button {
-      background: #aed581;
-      cursor: pointer;
-    }
+  button {
+    background: #aed581;
+    cursor: pointer;
+  }
 
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
+  button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
 
-    #calendarArea {
-      padding: 0;
-      border: none;
-      background: none;
-      box-shadow: none;
-    }
+  #calendarArea {
+    padding: 0;
+    border: none;
+    background: none;
+    box-shadow: none;
+  }
 
-    #calendarArea table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin: 0 auto;
-      background-color: #fff;
-    }
+  #calendarArea table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: #fff;
+  }
 
-    #calendarArea td, #calendarArea th {
-      padding: 4px 2px;
-      vertical-align: top;
-      border: 1px solid #bbb;
-    }
+  #calendarArea td, #calendarArea th {
+    padding: 2px; /* 減少整格的高度 */
+    vertical-align: top;
+    border: 1px solid #bbb;
+  }
 
-    .sunday {
-      background-color: #ffe4e1;
-    }
+  .sunday {
+    background-color: #ffe4e1;
+  }
 
-    .saturday {
-      background-color: #e0f7e9;
-    }
+  .saturday {
+    background-color: #e0f7e9;
+  }
 
-    .desc {
-      font-size: 1.1em;
-      color: #625b57;
-      text-align: center;
-      font-weight: bold;
-      margin-top: 0.4em;  /* ✅ 新增這行 */
-    }
+  td > div:first-child {
+    margin-bottom: 0.1em;  /* 日期與下拉選單距離縮小 */
+    line-height: 1.1;
+    font-size: 0.95em;
+  }
 
-    .desc-r {
-      color: red;
-    }
-    td > div:first-child {
-      margin-bottom: 0.1em;
-      line-height: 1; /* 壓低數字高度 */
-    }
-    .faint-select {
-      background-color: #eee;
-      color: #eee;
-      border: 1px solid #ccc;
-      padding: 2px 4px;
-      font-size: 1em;
-      border-radius: 4px;
-    }
+  .desc {
+    font-size: 1em;
+    color: #625b57;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 0.4em; /* 下拉選單與說明文字之間距離 */
+  }
 
-    .faint-select option {
-      color: #333;
-    }
+  .desc-r {
+    color: red;
+  }
 
-    .custom-select-wrapper {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-    }
+  .faint-select {
+    background-color: #eee;
+    color: #eee;
+    border: 1px solid #ccc;
+    padding: 2px 4px;        /* 高度縮小 */
+    font-size: 0.9em;
+    border-radius: 4px;
+    height: auto;
+  }
 
-    .custom-select-wrapper::after {
-      content: "🔽";
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      font-size: 0.9em;
-      color: #888;
-    }
+  .faint-select option {
+    color: #333;
+  }
 
-    #saveResult {
-      text-align: center;
-      margin-top: 0.5em;
-      font-weight: bold;
-      font-size: 0.95em;
-    }
-  </style>
+  .custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .custom-select-wrapper::after {
+    content: "🔽";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 0.9em;
+    color: #888;
+  }
+
+  #saveResult {
+    text-align: center;
+    margin-top: 0.5em;
+    font-weight: bold;
+    font-size: 0.95em;
+  }
+</style>
+
 </head>
 <body>
   <div id="loadingOverlay"></div>
