@@ -5,6 +5,19 @@
   <title>LINE約班</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<style>
+  #loadingOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    z-index: 9999;
+  }
+</style>
 
   <style>
     /* 基本樣式 */
@@ -123,7 +136,14 @@
     td > div:first-child {
       margin-bottom: 2px;
     }
-
+#loadingOverlay::after {
+  content: "🔄 載入中，請稍候…";
+  animation: blink 1.2s infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
     #saveResult {
       text-align: center;
       margin-top: 0.5em;
@@ -134,19 +154,7 @@
 </head>
 
 <body>
-    <div id="loadingOverlay" style="
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em;
-  font-weight: bold;
-  z-index: 9999;
-">
-  🔄 載入中，請稍候…
-</div>
+   <div id="loadingOverlay">🔄 載入中，請稍候…</div>
   <!-- 註冊區 -->
   <div id="registerArea" class="block" style="display:none;">
     <p>即將綁定的 <strong>LINE ID</strong> 為：</p>
