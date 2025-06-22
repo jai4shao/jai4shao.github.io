@@ -101,9 +101,7 @@
   }
 
   td > div:first-child {
-    margin-bottom: 0.1em;
-    line-height: 1.1;
-    font-size: 0.95em;
+    margin-bottom: 0em;
   }
 
   .desc {
@@ -118,12 +116,14 @@
     color: red;
   }
 
-  /* 🎯 下拉選單樣式 */
-  .custom-select-wrapper {
-    position: relative;
-    display: flex;
-    align-items: stretch;
-  }
+  /* 下拉選單 */
+.custom-select-wrapper select {
+  padding-top: 4px;       /* 調整上邊距，縮小空間 */
+  padding-bottom: 4px;    /* 調整下邊距 */
+  font-size: 0.9em;       /* 字型稍微縮小，讓顯示更緊湊 */
+  width: 100%;            /* 確保寬度 100% */
+  border-radius: 4px;     /* 保持圓角 */
+}
 
   .custom-select-wrapper select {
     width: 100%;
@@ -147,8 +147,8 @@
   top: 50%;                      /* 垂直置中起點 */
   left: 50%;                     /* 水平居中 */
   transform: translate(-50%, -50%); /* 讓圖示完全居中 */
-  width: 2.5em;                  /* 圖示寬度 */
-  height: 2.5em;                 /* 圖示高度 */
+  width: 3em;                  /* 圖示寬度 */
+  height: 3em;                 /* 圖示高度 */
   background-image: url("data:image/svg+xml;utf8,<svg fill='orange' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
   background-size: contain;
