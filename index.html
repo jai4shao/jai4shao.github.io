@@ -138,16 +138,28 @@
     width: 100%;
   }
 
-  .custom-select-wrapper::after {
-    content: "🔽";
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    font-size: 0.9em;
-    color: #888;
-  }
+.custom-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center; /* ✅ 垂直置中 */
+}
+
+.custom-select-wrapper select {
+  padding-right: 2em; /* 預留右邊空間 */
+}
+
+.custom-select-wrapper::after {
+  content: "🔽";
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  font-size: 1em;
+  color: #888;
+  top: 50%;
+  transform: translateY(-50%);
+  line-height: 1;
+}
+
 
   #saveResult {
     text-align: center;
