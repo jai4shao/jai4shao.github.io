@@ -124,37 +124,39 @@
 .custom-select-wrapper select {
   padding-top: 4px;
   padding-bottom: 4px;
-  font-size: 0.9em;
+  font-size: 0;             /* 隱藏選中的文字 */
   width: 100%;
   border-radius: 4px;
   height: 36px;
-  color: #333;             /* 預設文字顏色 */
+  color: transparent;       /* 讓文字顏色透明 */
   background-color: #f0f0f0;  /* 淡灰色背景 */
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding-right: 2.5em;    /* 預留空間給箭頭圖示 */
+  padding-right: 2.5em;     /* 預留空間給箭頭圖示 */
   box-sizing: border-box;
+  position: relative;
 }
 
-/* 設置選項的文字顏色與背景一致 */
+/* 設置選項的文字顏色與背景一致，讓文字透明 */
 .custom-select-wrapper select option {
-  color: #333;                  /* 文字顏色 */
-  background-color: #f0f0f0;    /* 背景顏色與選單一致 */
+  color: transparent;            /* 文字顏色透明 */
+  background-color: #f0f0f0;     /* 背景顏色與選單一致 */
+  font-size: 0;                  /* 隱藏文字 */
 }
 
-/* 當選項被選擇時，文字顏色與背景色保持一致 */
+/* 當選項被選擇時，保持透明 */
 .custom-select-wrapper select option:checked {
-  background-color: #f0f0f0;    /* 選擇後的背景色 */
-  color: #333;                   /* 文字顏色保持與背景一致 */
-  font-size: 0;                   /* 隱藏選中的文字 */
+  background-color: #f0f0f0;     /* 選擇後的背景色 */
+  color: transparent;            /* 文字顏色保持透明 */
+  font-size: 0;                  /* 隱藏文字 */
 }
 
 /* 下拉選單中的 SVG 圖示 */
 .custom-select-wrapper::after {
   content: "";
   position: absolute;
-  top: 50%;                      /* 垂直置中起點 */
+  top: 50%;                      /* 垂直置中 */
   left: 50%;                     /* 水平居中 */
   transform: translate(-50%, -50%); /* 讓圖示完全居中 */
   width: 3em;                  /* 圖示寬度 */
@@ -165,6 +167,15 @@
   background-position: center;
   pointer-events: none;
   z-index: 10; /* 確保箭頭顯示在 select 之上 */
+}
+
+/* 顯示選項的替代說明文字 */
+.custom-select-wrapper .option-desc {
+  display: block;
+  font-size: 1em;
+  color: #333;
+  margin-top: 5px;
+  text-align: center;
 }
 
 /* 預約按鈕啟用狀態 */
