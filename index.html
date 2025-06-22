@@ -120,7 +120,7 @@
   position: relative; /* 使 ::after 能夠相對定位 */
 }
     
-  /* 下拉選單 */
+ /* 下拉選單 */
 .custom-select-wrapper select {
   padding-top: 4px;
   padding-bottom: 4px;
@@ -135,21 +135,18 @@
   -moz-appearance: none;
   padding-right: 2.5em;    /* 預留空間給箭頭圖示 */
   box-sizing: border-box;
-  opacity: 1;              /* 確保選單和選項透明 */
 }
 
-/* 設置選項的透明化 */
+/* 設置選項的文字顏色與背景一致 */
 .custom-select-wrapper select option {
   color: #333;                  /* 文字顏色 */
   background-color: #f0f0f0;    /* 背景顏色與選單一致 */
-  opacity: 0.6;                 /* 讓選項保持透明 */
 }
 
 /* 當選項被選擇時，文字顏色與背景色保持一致 */
 .custom-select-wrapper select option:checked {
   background-color: #f0f0f0;    /* 選擇後的背景色 */
   color: #333;                   /* 文字顏色保持與背景一致 */
-  opacity: 1;                    /* 保持透明 */
 }
 
 /* 下拉選單中的 SVG 圖示 */
@@ -168,6 +165,7 @@
   pointer-events: none;
   z-index: 10; /* 確保箭頭顯示在 select 之上 */
 }
+
 
 
 /* 預約按鈕啟用狀態 */
