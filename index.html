@@ -165,6 +165,24 @@
     font-weight: bold;
     font-size: 0.95em;
   }
+    /* 預約按鈕禁用樣式 */
+button:disabled {
+  background-color: #ccc;  /* 灰色背景 */
+  cursor: not-allowed;     /* 禁用游標 */
+}
+
+button.disabled {
+  background-color: #ccc;  /* 灰色背景 */
+  color: #999;              /* 灰色文字 */
+}
+
+/* 預約按鈕啟用狀態 */
+button {
+  background-color: #aed581;  /* 綠色背景 */
+  color: #fff;
+  cursor: pointer;
+}
+
 </style>
 
 
@@ -191,10 +209,11 @@
     <h2 id="calendarTitle"></h2>
     <div id="calendarTable"></div>
     <div id="extraFields" style="margin-bottom: 1em;">
+      <br>
       <label><strong id="sixDaysLabel">的六天班：</strong>
         <input type="text" id="sixDaysInput" placeholder="例如：NNNRRE" />
       </label>
-      <br><br>
+      <br>
       <label><strong>備註：</strong>
         <input type="text" id="noteInput" placeholder="例如：本月無約班需求" />
       </label>
@@ -391,7 +410,42 @@
       document.getElementById("registerBtn").disabled = !this.checked;
     });
 
-    window.onload = init;
+    window.onload = function() {
+  // 原來的 init 函數（如果有的話）可以放在這裡
+  init();  // 若你的 init 函數有需要繼續執行，保留這行
+  
+  // 檢查當前時間
+  const now = new Date();
+  const dayOfMonth = now.getDate();  // 當天是這個月的幾號
+  const hours = now.getHours();      // 當前小時
+  const minutes = now.getMinutes(); // 當前分鐘
+
+  // 預約按鈕
+  const reserveBtn = document.getElementById("reserveBtn");
+  const reserveBtnText = document.getElementById("reserveBtnText");
+  
+  // 註冊按鈕
+  const registerBtn = document.getElementById("registerBtn");
+
+  // 預約時間條件：1號到15號，且時間是12:30之前
+  if ((dayOfMonth >= 1 && dayOfMonth <= 25) && (hours < 12 || (hours === 12 && minutes <= 30))) {
+    reserveBtn.disabled = false;  // 啟用預約按鈕
+    reserveBtn.classList.remove("disabled");  // 移除禁用樣式
+    reserveBtnText.textContent = "預約";   // 顯示「預約」文字
+  } else {
+    reserveBtn.disabled = true;   // 禁用預約按鈕
+    reserveBtn.classList.add("disabled");  // 顯示禁用樣式
+    reserveBtnText.textContent = "目前非預約時段"; // 顯示「目前非預約時段」文字
+  }
+
+  // 註冊按鈕：無論時間如何，按下後禁用
+  registerBtn.onclick = function() {
+    this.disabled = true;
+    this.textContent = "正在處理...";  // 改變按鈕文字為「正在處理...」
+    // 這裡可以加入註冊的處理邏輯
+  }
+}
+
   </script>
 </body>
 </html>
