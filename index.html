@@ -118,28 +118,22 @@
 
   /* 下拉選單 */
 .custom-select-wrapper select {
-  padding-top: 4px;       /* 調整上邊距，縮小空間 */
-  padding-bottom: 4px;    /* 調整下邊距 */
-  font-size: 0.9em;       /* 字型稍微縮小，讓顯示更緊湊 */
-  width: 100%;            /* 確保寬度 100% */
-  border-radius: 4px;     /* 保持圓角 */
+  padding-top: 4px;             /* 調整上邊距，縮小空間 */
+  padding-bottom: 4px;          /* 調整下邊距 */
+  font-size: 0.9em;             /* 字型稍微縮小，讓顯示更緊湊 */
+  width: 100%;                  /* 確保寬度 100% */
+  border-radius: 4px;           /* 保持圓角 */
+  padding-right: 2.5em;         /* 預留空間給箭頭圖示 */
+  appearance: none;             /* 隱藏原生箭頭 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #eee;       /* 設置背景顏色 */
+  color: #333;                  /* 文字顏色 */
+  border: 1px solid #ccc;       /* 邊框顏色 */
+  height: auto;                 /* 高度自動調整 */
+  box-sizing: border-box;       /* 確保邊框與內邊距不影響寬度 */
 }
 
-  .custom-select-wrapper select {
-    width: 100%;
-    padding-right: 2.5em;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    font-size: 0.9em;
-    background-color: #eee;
-    color: #eee;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    height: auto;
-    padding: 4px 6px;
-    box-sizing: border-box;
-  }
 
   .custom-select-wrapper::after {
   content: "";
