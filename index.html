@@ -5,24 +5,35 @@
   <title>LINE約班</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<style>
-  #loadingOverlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2em;
-    font-weight: bold;
-    z-index: 9999;
-  }
 
-    /* 基本樣式 */
+  <style>
+    /* 🔄 載入中提示 */
+    #loadingOverlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      z-index: 9999;
+    }
+
+    #loadingOverlay::after {
+      content: "🔄 載入中，請稍候…";
+      animation: blink 1.2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
     body {
       font-family: sans-serif;
       background: #f9fbe7;
-      padding: 0;
+      margin: 0;
       font-size: 100%;
     }
 
@@ -68,7 +79,6 @@
 
     #calendarArea table {
       width: 100%;
-      max-width: 100vw;
       table-layout: fixed;
       border-collapse: collapse;
       margin: 0 auto;
@@ -89,10 +99,13 @@
       background-color: #e0f7e9;
     }
 
+    td > div:first-child {
+      margin-bottom: 0.3em; /* 更緊密 */
+    }
+
     .desc {
       font-size: 1.1em;
       color: #625b57;
-      margin-top: 1px;
       text-align: center;
       font-weight: bold;
     }
@@ -131,17 +144,6 @@
       color: #888;
     }
 
-    td > div:first-child {
-      margin-bottom: 2px;
-    }
-#loadingOverlay::after {
-  content: "🔄 載入中，請稍候…";
-  animation: blink 1.2s infinite;
-}
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
     #saveResult {
       text-align: center;
       margin-top: 0.5em;
@@ -150,9 +152,9 @@
     }
   </style>
 </head>
-
 <body>
-   <div id="loadingOverlay">🔄 載入中，請稍候…</div>
+  <div id="loadingOverlay"></div>
+
   <!-- 註冊區 -->
   <div id="registerArea" class="block" style="display:none;">
     <p>即將綁定的 <strong>LINE ID</strong> 為：</p>
@@ -172,9 +174,13 @@
     <h2 id="calendarTitle"></h2>
     <div id="calendarTable"></div>
     <div id="extraFields" style="margin-bottom: 1em;">
-      <label><strong id="sixDaysLabel">的六天班：</strong><input type="text" id="sixDaysInput" placeholder="例如：NNNRRE" /></label>
+      <label><strong id="sixDaysLabel">的六天班：</strong>
+        <input type="text" id="sixDaysInput" placeholder="例如：NNNRRE" />
+      </label>
       <br><br>
-      <label><strong>備註：</strong><input type="text" id="noteInput" placeholder="例如：本月無約班需求" /></label>
+      <label><strong>備註：</strong>
+        <input type="text" id="noteInput" placeholder="例如：本月無約班需求" />
+      </label>
     </div>
     <button id="saveBtn" style="display:none;">儲存班表</button>
     <div id="saveResult"></div>
@@ -191,9 +197,10 @@
       const profile = await liff.getProfile();
       lineId = profile.userId;
       document.getElementById("displayLineId").textContent = lineId;
-      checkRegistration();
-            // 👇 載入完成後關閉提示
-    document.getElementById("loadingOverlay").style.display = "none";
+      await checkRegistration();
+
+      // ✅ 資料處理完成才關閉 loading
+      document.getElementById("loadingOverlay").style.display = "none";
     }
 
     async function checkRegistration() {
@@ -204,7 +211,7 @@
 
       if (text === "found") {
         document.getElementById("calendarArea").style.display = "block";
-        generateCalendar();
+        await generateCalendar();
       } else {
         document.getElementById("registerArea").style.display = "block";
       }
@@ -222,7 +229,7 @@
       if (text.includes("成功")) {
         document.getElementById("registerArea").style.display = "none";
         document.getElementById("calendarArea").style.display = "block";
-        generateCalendar();
+        await generateCalendar();
       }
     };
 
@@ -326,7 +333,6 @@
       document.getElementById("saveBtn").style.display = "block";
     }
 
-    // 儲存按鈕送出功能（含防呆與 LOADING UI）
     document.getElementById("saveBtn").onclick = async () => {
       const btn = document.getElementById("saveBtn");
       const result = document.getElementById("saveResult");
@@ -354,7 +360,7 @@
         const text = await res.text();
 
         alert("✅ 資料已成功送出！");
-        liff.closeWindow(); // 關閉 LIFF 頁面
+        liff.closeWindow();
       } catch (err) {
         result.textContent = "⚠️ 發生錯誤，請稍後再試！";
         result.style.color = "#d32f2f";
@@ -364,7 +370,6 @@
       }
     };
 
-    // 註冊確認勾選
     document.getElementById("confirmLineId").addEventListener("change", function () {
       document.getElementById("registerBtn").disabled = !this.checked;
     });
