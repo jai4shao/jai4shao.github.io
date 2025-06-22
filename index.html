@@ -430,7 +430,7 @@ button {
   const registerBtn = document.getElementById("registerBtn");
 
   // 預約時間條件：1號到15號，且時間是12:30之前
-  if ((dayOfMonth >= 1 && dayOfMonth <= 25) && (hours < 12 || (hours === 12 && minutes <= 30))) {
+  if ((dayOfMonth >= 1 && dayOfMonth <= 15) && (hours < 12 || (hours === 12 && minutes <= 30))) {
     reserveBtn.disabled = false;  // 啟用預約按鈕
     reserveBtn.classList.remove("disabled");  // 移除禁用樣式
     reserveBtnText.textContent = "預約";   // 顯示「預約」文字
