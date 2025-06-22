@@ -122,42 +122,36 @@
     
   /* 下拉選單 */
 .custom-select-wrapper select {
-  padding-top: 4px;             /* 調整上邊距，縮小空間 */
-  padding-bottom: 4px;          /* 調整下邊距 */
-  font-size: 0.9em;             /* 字型稍微縮小，讓顯示更緊湊 */
-  width: 100%;                  /* 確保寬度 100% */
-  border-radius: 4px;           /* 保持圓角 */
-  padding-right: 2.5em;         /* 預留空間給箭頭圖示 */
-  appearance: none;             /* 隱藏原生箭頭 */
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 0.9em;
+  width: 100%;
+  border-radius: 4px;
+  height: 36px;
+  color: #333;            /* 設置預設文字顏色 */
+  background-color: #fff; /* 設置背景顏色 */
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-color: #eee;       /* 設置背景顏色 */
-  color: #333;                  /* 文字顏色 */
-  border: 1px solid #ccc;       /* 邊框顏色 */
-  height: auto;                 /* 高度自動調整 */
-  box-sizing: border-box;       /* 確保邊框與內邊距不影響寬度 */
-}
-
-
-  .custom-select-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 50%;                      /* 垂直置中起點 */
-  left: 50%;                     /* 水平居中 */
-  transform: translate(-50%, -50%); /* 讓圖示完全居中 */
-  width: 3em;                  /* 圖示寬度 */
-  height: 3em;                 /* 圖示高度 */
   background-image: url("data:image/svg+xml;utf8,<svg fill='orange' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  pointer-events: none;
-  }
+  padding-right: 2.5em; /* 預留空間給箭頭圖示 */
+  box-sizing: border-box;
+}
 
+/* 設置選項文字顏色 */
+.custom-select-wrapper select option {
+  color: #333;                  /* 設置文字顏色 */
+  background-color: #fff;       /* 設置選項的背景顏色 */
+}
 
-  .custom-select-wrapper select option {
-    color: #333;
-  }
+/* 如果選項背景色要與選單背景色相同 */
+.custom-select-wrapper select:disabled option {
+  color: #aaa;                  /* 禁用狀態的文字顏色 */
+  background-color: #f0f0f0;    /* 禁用選項的背景顏色 */
+}
   
   #saveResult {
     text-align: center;
